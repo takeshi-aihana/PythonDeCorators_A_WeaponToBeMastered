@@ -238,8 +238,61 @@ Arguments dumped
 
 デコレータは再利用が可能です。
 つまり、同じデコレータを複数の関数に対して使用できます。
-さらに、他のモジュールからデコレータをインポートすることも可能になっています。
+さらに、他のモジュールからデコレータをインポートすることも可能です。
 
 ---
 
-## デコレータのスタック
+## 複数のデコレータを適用する
+
+単一の関数に複数のデコレータを適用することも可能です。
+
+例えば、引数の情報だけではなく、関数を実行した時のタイムスタンプもログとして記録する必要がある場合を見てみましょう：
+
+```Python
+In [7]: import datetime
+
+In [8]: def dump_args(func): 
+   ...:     def wrapper(*args, **kwargs): 
+   ...:         print(f'{func.__name__} has arguments - {args}, {kwargs}') 
+   ...:         func(*args, **kwargs) 
+   ...:     return wrapper 
+
+In [9]: def cal_time(func): 
+   ...:     def wrapper(*args, **kwargs): 
+   ...:         now = datetime.datetime.now() 
+   ...:         print('start of execution :', now.strftime('%Y/%m/%d %H:%M:%S')) 
+   ...:         func(*args, **kwargs) 
+   ...:         now = datetime.datetime.now() 
+   ...:         print('end of execution :', now.strftime('%Y/%m/%d %H:%M:%S')) 
+   ...:     return wrapper 
+   ...:
+
+In [10]: @cal_time 
+    ...: @dump_args 
+    ...: def wrap_me(arg1, arg2): 
+    ...:     print('Arguments dumped') 
+    ...:
+    
+In [11]: wrap_me('arg_dump1', 'arg_dump2')
+
+```
+
+ここでは ``wrap_me()`` 関数に二つのデコレータを適用しています。
+このあとの動きがどうなるか想像してみて下さい。
+
+こちらが正解です：
+
+```Python
+
+start of execution : 2020/07/01 18:50:42
+wrap_me has arguments - ('arg_dump1', 'arg_dump2'), {}
+Arguments dumped
+end of execution : 2020/07/01 18:50:42
+```
+
+積み重なった二つのデコレータが「下から上へ」適用されています。
+デコレータが受け取った関数は、まず ``@dump_args()`` に巻きつかれ、次に処理された結果の（デコレータが適用された）関数が ``@cal_time()`` によって再び巻き付かれます。
+
+---
+
+
