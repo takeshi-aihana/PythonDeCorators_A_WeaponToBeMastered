@@ -164,3 +164,41 @@ After the function is executed.
 この時点で、元々の ``wrap_me()`` 関数が実行される前と後で別の命令がそれぞれ実行されます。
 
 > ちょっと難しいそうだと思うかもしれませんが、一度その動きをしっかりと理解すれば、間違いなくデコレータの魅力に取り憑かれてしまうことでしょう。
+
+---
+
+## @(Pi)記号
+
+``wrap_me()`` 関数でデコレータを呼び出して、それを ``wrap_me`` 変数に割り当てる代わりに Python の ``@`` (pi) 記号が使えます。
+
+
+```Python
+In [1]: def decorator(func): 
+   ...:     def wrapper(): 
+   ...:         print('Before the function gets called.') 
+   ...:         func() 
+   ...:         print('After the function is executed.') 
+   ...:     return wrapper 
+   ...:
+
+In [2]: @decorator 
+   ...: def wrap_me(): 
+   ...:     print('Hello Decorators!') 
+   ...:
+
+In [3]: wrap_me()
+
+Before the function gets called.
+Hello Decorators!
+After the function is executed.
+
+```
+
+``@`` 記号を使うということは、デコレータを呼び出すために一般的に使用するパタンや短縮形を得るための「シンタックス・シュガー（糖衣構文）」を追加することです。
+
+Using @ syntax is just adding syntactic sugar to achieve this commonly used pattern or shorthand for calling the decorator on an input function.
+
+*全然よくわからん英語*
+
+---
+
