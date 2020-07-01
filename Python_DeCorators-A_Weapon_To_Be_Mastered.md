@@ -194,11 +194,52 @@ After the function is executed.
 
 ```
 
-``@`` 記号を使うということは、デコレータを呼び出すために一般的に使用するパタンや短縮形を得るための「シンタックス・シュガー（糖衣構文）」を追加することです。
-
-Using @ syntax is just adding syntactic sugar to achieve this commonly used pattern or shorthand for calling the decorator on an input function.
-
-*全然よくわからん英語*
+``@`` 記号を使うということは、デコレータを呼び出すために一般的に使用するコードを短く表現したものを得るために「シンタックス・シュガー（糖衣構文）」を追加すると言うことと等価です。
 
 ---
 
+## 引数を受け取るデコレータ
+
+
+ここで誰もがするお決まりの質問があります ー 「もともと引数を受け取る関数にデコレータを適用するにはどうすれば良いですか？」
+
+Python ではそれができます。
+そして、それはかなり簡単です。
+``*args`` とか ``**kwargs`` など関数で可変引数を扱うものがあることをご存知ですか？
+
+これだけです！
+この二つのキーワードを用意するだけで大丈夫です。
+
+それでは例として、関数の引数情報をログに記録するデコレータを書いてみることにしましょう：
+
+```Python
+In [4]: def dump_args(func): 
+   ...:     def wrapper(*args, **kwargs): 
+   ...:         print(f'{args}, {kwargs}') 
+   ...:         func(*args, **kwargs) 
+   ...:     return wrapper 
+   ...:
+
+In [5]: @dump_args 
+   ...: def wrap_me(arg1, arg2): 
+   ...:     print(f'Arguments dumped') 
+   ...:
+
+In [6]: wrap_me('arg_dump1', 'arg_dump2')
+
+('arg_dump1', 'arg_dump2'), {}
+Arguments dumped
+
+```
+
+この例では ``wrapper()`` 関数の定義で ``*`` と ``**`` と言う二つの演算子を使い、位置引数とキーワード・オンリー引数の全てを受け取り、それぞれ ``args`` と ``kwargs`` という変数に格納し、デコレータが受け取った関数（すなわち ``wrap_me()``）に転送しています。
+
+---
+
+デコレータは再利用が可能です。
+つまり、同じデコレータを複数の関数に対して使用できます。
+さらに、他のモジュールからデコレータをインポートすることも可能になっています。
+
+---
+
+## デコレータのスタック
