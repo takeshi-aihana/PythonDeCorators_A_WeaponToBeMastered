@@ -167,9 +167,9 @@ After the function is executed.
 
 ---
 
-## @(Pi)記号
+## @（パイ）記号
 
-``wrap_me()`` 関数でデコレータを呼び出して、それを ``wrap_me`` 変数に割り当てる代わりに Python の ``@`` (pi) 記号が使えます。
+``wrap_me()`` 関数でデコレータを呼び出して、それを ``wrap_me`` 変数に割り当てる代わりに Python の ``@`` (Pie / パイ) 記号が使えます。
 
 
 ```Python
